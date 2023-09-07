@@ -1,16 +1,39 @@
-# 这是一个示例 Python 脚本。
+import pandas
+from model.analyzor import Analyzor
+import argparse
 
-# 按 Shift+F10 执行或将其替换为您的代码。
-# 按 双击 Shift 在所有地方搜索类、文件、工具窗口、操作和设置。
+def dico(text_path,
+         voca_path,
+         device,
+         check_point,
+         pu_dict_path):
+
+    with open(text_path, 'r', encoding='utf-8') as file:
+        suorce_text = file.read()
+    model = Analyzor(text_path,
+                     voca_path,
+                     device,
+                     check_point,
+                     pu_dict_path)
+    model.pu_detect_static(source_text=suorce_text)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--text_path", default='data/text/dream_of_the_red_chambre.txt')
+    parser.add_argument("--voca_path", default=None)
+    parser.add_argument("--device", default='cuda:0')
+    parser.add_argument("--check_point", default='facebook/nllb-200-distilled-600M')
+    parser.add_argument("--pu_dict_path", default='data/voca/pu.csv')
+    args = parser.parse_args()
+    text_path = args.text_path
+    voca_path = args.voca_path
+    device = args.device
+    check_point = args.check_point
+    pu_dict_path = args.pu_dict_path
+    dico(text_path=text_path,
+         voca_path=voca_path,
+         device=device,
+         check_point=check_point,
+         pu_dict_path=pu_dict_path)
 
 
-def print_hi(name):
-    # 在下面的代码行中使用断点来调试脚本。
-    print(f'Hi, {name}')  # 按 Ctrl+F8 切换断点。
-
-
-# 按间距中的绿色按钮以运行脚本。
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# 访问 https://www.jetbrains.com/help/pycharm/ 获取 PyCharm 帮助
