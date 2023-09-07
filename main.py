@@ -16,6 +16,9 @@ def dico(text_path,
                      check_point,
                      pu_dict_path)
     model.pu_detect_static(source_text=suorce_text)
+    model.translate(traget_lang='fra_Latn',
+                    source_lang='zho_Hans',
+                    source_text='今风尘碌碌，一事无成')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

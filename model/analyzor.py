@@ -1,6 +1,4 @@
-import pandas
 import pandas as pd
-import torch
 from transformers import AutoTokenizer, AutoModelWithLMHead
 
 class Analyzor():
@@ -20,6 +18,9 @@ class Analyzor():
     def translate(self, traget_lang, source_lang, source_text):
         output_tokeniz = self.tokenizer.prepare_seq2seq_batch([source_text],
                                                               return_tensors="pt")
+        for key, value in output_tokeniz.items():
+            output_tokeniz[key] = value.to(self.device)
+
         result_trans = self.model.generate(**output_tokeniz)
         text_trans = self.tokenizer.batch_decode(result_trans,
                                                  skip_special_tokens=True)
