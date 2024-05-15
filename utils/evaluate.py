@@ -1,5 +1,5 @@
 import numpy as np
-from datasets import load_dataset, load_metric
+import evaluate
 
 def postprocess_text(preds, labels):
     preds = [pred.strip() for pred in preds]
@@ -7,11 +7,14 @@ def postprocess_text(preds, labels):
     return preds, labels
 
 def get_evaluator(tokenizer):
-    metric = load_metric("sacrebleu")
+    metric = evaluate.load("sacrebleu")
+    metric_rouge = evaluate.load("rouge")
+
     def compute_metrics(eval_preds):
         preds, labels = eval_preds
         if isinstance(preds, tuple):
             preds = preds[0]
+
         decoded_preds = tokenizer.batch_decode(preds, skip_special_tokens=True)
         # Replace -100 in the labels as we can't decode them.
         labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
@@ -19,11 +22,14 @@ def get_evaluator(tokenizer):
         # Some simple post-processing
         decoded_preds, decoded_labels = postprocess_text(decoded_preds, decoded_labels)
         result = metric.compute(predictions=decoded_preds, references=decoded_labels)
-        result = {"bleu": result["score"]}
+        result_rouge = metric_rouge.compute(predictions=decoded_preds, references=decoded_labels)
+        result = {
+                    "sacrebleu": result["score"],
+                  }
         prediction_lens = [np.count_nonzero(pred != tokenizer.pad_token_id) for pred in preds]
         result["gen_len"] = np.mean(prediction_lens)
         result = {k: round(v, 4) for k, v in result.items()}
-        print(decoded_preds)
+        # print(decoded_preds)
         return result
 
     return compute_metrics

@@ -13,7 +13,7 @@
       <paths name="wsun01@l3itransnet.univ-lr.fr:22 password">
         <serverdata>
           <mappings>
-            <mapping local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/data/wsun01/DiCo" local="$PROJECT_DIR$" web="/" />
           </mappings>
         </serverdata>
       </paths>
